@@ -2,6 +2,7 @@ package wifiscan
 
 // AP presents a scanned access point.
 type AP struct {
-	BSSID string
+	BSSID  string
 	Signal int
+	SSID   string
 }

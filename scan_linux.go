@@ -42,6 +42,8 @@ func iw(ctx context.Context, out chan *AP, ifname string) error {
 
 	var name string
 	var signal int
+	var ssid string
+
 	scn := bufio.NewScanner(opp)
 	for scn.Scan() {
 		line := scn.Text()
@@ -58,6 +60,8 @@ func iw(ctx context.Context, out chan *AP, ifname string) error {
 			if err != nil {
 				panic(err)
 			}
+		} else if strings.Contains(line, "SSID:") {
+			ssid = strings.Split(line, "SSID:")[1]
 		}
 		if name != "" && signal != 0 {
 			if signal < minimumThreshold {
@@ -67,10 +71,12 @@ func iw(ctx context.Context, out chan *AP, ifname string) error {
 			out <- &AP{
 				BSSID:  name,
 				Signal: signal,
+				SSID:   ssid,
 			}
 
 			name = ""
 			signal = 0
+			ssid = ""
 		}
 	}
 
